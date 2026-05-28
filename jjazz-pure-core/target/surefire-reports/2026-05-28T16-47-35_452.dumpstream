@@ -1,5 +1,0 @@
-# Created at 2026-05-28T16:47:37.985
-Boot Manifest-JAR contains absolute paths in classpath 'E:\GitHub\jjazz-mobile\jjazz-pure-core\target\test-classes'
-Hint: <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
-'other' has different root
-
