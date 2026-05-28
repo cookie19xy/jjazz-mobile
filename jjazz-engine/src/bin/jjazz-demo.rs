@@ -77,7 +77,7 @@ fn write_wav(path: &str, samples: &[f32], sample_rate: u32) {
     f.write_all(&data_len.to_le_bytes()).unwrap();
 
     // Convert f32 to i16 with gain boost
-    let gain = 8.0; // boost volume
+    let gain = 1.5; // modest gain, synth should produce full volume
     for s in samples {
         let clamped = (s * gain * 32767.0).clamp(-32768.0, 32767.0) as i16;
         f.write_all(&clamped.to_le_bytes()).unwrap();

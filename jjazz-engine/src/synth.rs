@@ -18,7 +18,7 @@ impl SynthEngine {
             .map_err(|e| format!("Failed to parse SoundFont: {}", e))?);
 
         let mut settings = SynthesizerSettings::new(44100);
-        settings.enable_reverb_and_chorus = true;
+        settings.enable_reverb_and_chorus = false; // keep clean, no effect noise
         let synth = Synthesizer::new(&sf2, &settings)
             .map_err(|e| format!("Failed to create synth: {}", e))?;
 
@@ -27,14 +27,14 @@ impl SynthEngine {
 
     pub fn sample_rate(&self) -> i32 { 44100 }
 
-    /// Set instrument (program change) on a channel.
     pub fn program_change(&mut self, channel: u8, program: u8) {
         self.synthesizer.process_midi_message(channel as i32, 0xC0, program as i32, 0);
     }
 
-    /// Reset the synthesizer.
     pub fn reset(&mut self) {
         self.synthesizer.reset();
+        // Silence any hanging voices after reset
+        self.synthesizer.note_off_all(true);
     }
 
     /// Render multiple Phrase tracks to stereo interleaved f32 samples.
@@ -57,13 +57,13 @@ impl SynthEngine {
         let total_samples = ((total_beats + 1.0) * 60.0 / bpm * sr) as usize;
         self.reset();
 
-        // Set instruments: all channels use piano (0) for guaranteed sound in any GM SoundFont
-        self.program_change(0, 0);
-        self.program_change(1, 0);
-        self.program_change(2, 0);
+        // Standard GM instruments
+        self.program_change(0, 33); // Acoustic Bass
+        self.program_change(1, 1);  // Acoustic Grand Piano
+        self.program_change(2, 49); // String Ensemble 1
 
-        // Boost master volume
-        self.synthesizer.set_master_volume(2.0);
+        // Default master volume (no artificial boost)
+        self.synthesizer.set_master_volume(1.0);
 
         let mut output = vec![0.0f32; total_samples * 2];
         let mut event_idx = 0;
@@ -84,6 +84,18 @@ impl SynthEngine {
             output[sample * 2] = l[0];
             output[sample * 2 + 1] = r[0];
         }
+
+        // Fade out last 0.1s to avoid click
+        let fade_samples = (0.1 * sr) as usize;
+        if output.len() > fade_samples * 2 {
+            let start = output.len() - fade_samples * 2;
+            for i in 0..fade_samples {
+                let gain = 1.0 - (i as f32 / fade_samples as f32);
+                output[start + i * 2] *= gain;
+                output[start + i * 2 + 1] *= gain;
+            }
+        }
+
         output
     }
 }
