@@ -1,0 +1,16 @@
+org\jjazz\purecore\harmony\Degree.class
+org\jjazz\purecore\harmony\SymbolicDuration.class
+org\jjazz\purecore\harmony\Chord.class
+org\jjazz\purecore\harmony\ChordTypes.class
+org\jjazz\purecore\harmony\ChordType$Family.class
+org\jjazz\purecore\harmony\Degree$Natural.class
+org\jjazz\purecore\harmony\Position.class
+org\jjazz\purecore\harmony\ChordType$DegreeIndex.class
+org\jjazz\purecore\harmony\ChordType$1.class
+org\jjazz\purecore\harmony\ChordSymbol.class
+org\jjazz\purecore\harmony\StandardScales.class
+org\jjazz\purecore\harmony\ChordType.class
+org\jjazz\purecore\harmony\Note$Accidental.class
+org\jjazz\purecore\harmony\Scale.class
+org\jjazz\purecore\harmony\TimeSignature.class
+org\jjazz\purecore\harmony\Note.class
