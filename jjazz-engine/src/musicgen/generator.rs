@@ -3,19 +3,27 @@ use crate::phrase::{Phrase, NoteEvent};
 use crate::humanizer::{Humanizer, HumanizerConfig};
 use crate::quantizer::{quantize, Quantization};
 use crate::harmony::{TimeSignature, Position};
-use crate::style::{AccType, Style, ChannelSettings, RetriggerRule};
+use crate::style::{AccType, Style};
 use crate::retrigger::adapt_note;
 
-/// Generate backing tracks using style-based multi-track arrangement.
+/// Generate backing tracks using style-based multi-track arrangement (with humanization).
 pub fn generate_with_style(chords: &[ChordSymbol], style: &Style) -> Vec<Phrase> {
-    let part = &style.parts[0]; // Use Variation A
+    generate_impl(chords, style, true)
+}
+
+/// Generate without humanization (deterministic, for golden tests).
+pub fn generate_clean(chords: &[ChordSymbol], style: &Style) -> Vec<Phrase> {
+    generate_impl(chords, style, false)
+}
+
+fn generate_impl(chords: &[ChordSymbol], style: &Style, humanize: bool) -> Vec<Phrase> {
+    let part = &style.parts[0];
     let ts = TimeSignature::FOUR_FOUR;
     let voice_types = [
         AccType::SubRhythm, AccType::Rhythm, AccType::Bass,
         AccType::Chord1, AccType::Chord2, AccType::Pad,
         AccType::Phrase1, AccType::Phrase2,
     ];
-
     let mut tracks: Vec<Phrase> = voice_types.iter()
         .map(|at| Phrase::new(at.channel()))
         .collect();
@@ -30,52 +38,37 @@ pub fn generate_with_style(chords: &[ChordSymbol], style: &Style) -> Vec<Phrase>
         for (vi, at) in voice_types.iter().enumerate() {
             let cfg = &part.channel_settings[vi];
             let track = &mut tracks[vi];
-
             match at {
                 AccType::SubRhythm | AccType::Rhythm => {
-                    // Drums: hi-hat on every 8th note, kick on 1&3, snare on 2&4
                     if *at == AccType::Rhythm {
-                        // Kick (36) on beat 1 and 3
                         track.add(NoteEvent::new(36, 0.3, 110, bar_start));
                         track.add(NoteEvent::new(36, 0.3, 100, bar_start + 2.0));
-                        // Snare (38) on beat 2 and 4
                         track.add(NoteEvent::new(38, 0.2, 100, bar_start + 1.0));
                         track.add(NoteEvent::new(38, 0.2, 100, bar_start + 3.0));
-                        // Hi-hat (42) on 8th notes
                         for i in 0..8 {
                             track.add(NoteEvent::new(42, 0.1, 70, bar_start + i as f32 * 0.5));
                         }
                     }
                 }
                 AccType::Bass => {
-                    // Generate bass pattern: root on beat 1, approach notes
                     let pattern = [(0.0, 1.5), (2.0, 0.5), (2.5, 0.5), (3.0, 0.5)];
                     for &(offset, dur) in &pattern {
-                        let pitch = if offset == 0.0 {
-                            root
-                        } else if offset < 3.0 {
-                            root + 7 // fifth
-                        } else {
-                            // chromatic approach to next chord root
+                        let pitch = if offset == 0.0 { root }
+                        else if offset < 3.0 { root + 7 }
+                        else {
                             let next_rp = if bar + 1 < chords.len() {
                                 chords[bar + 1].root_note.relative_pitch()
-                            } else {
-                                current_cs.root_note.relative_pitch()
-                            };
+                            } else { current_cs.root_note.relative_pitch() };
                             let next_root = (base_octave + next_rp as i32).max(0).min(127) as u8;
                             if next_root > root { next_root - 1 } else { next_root + 1 }
                         };
-                        // Apply retrigger for chord changes
                         let final_pitch = if bar > 0 && offset == 0.0 {
                             adapt_note(pitch, prev_cs, current_cs, cfg.retrigger_rule).unwrap_or(pitch)
-                        } else {
-                            pitch
-                        };
+                        } else { pitch };
                         track.add(NoteEvent::new(final_pitch, dur, 110, bar_start + offset));
                     }
                 }
                 AccType::Chord1 | AccType::Chord2 => {
-                    // Chord comping patterns
                     let pattern: Vec<(f32, f32)> = match *at {
                         AccType::Chord1 => vec![(0.0, 0.6), (1.0, 0.4), (2.0, 0.5), (3.0, 0.4)],
                         _ => vec![(0.0, 0.8), (2.0, 0.6), (3.0, 0.5)],
@@ -92,10 +85,8 @@ pub fn generate_with_style(chords: &[ChordSymbol], style: &Style) -> Vec<Phrase>
                     }
                 }
                 AccType::Pad => {
-                    // Sustained pad notes
                     if let Some(ct) = current_cs.chord_type() {
-                        let degs: Vec<_> = ct.degrees.iter().take(3).collect();
-                        for &d in &degs {
+                        for &d in ct.degrees.iter().take(3) {
                             let pitch = (root + 12 + d.pitch()).min(127);
                             let final_pitch = if bar > 0 {
                                 adapt_note(pitch, prev_cs, current_cs, cfg.retrigger_rule).unwrap_or(pitch)
@@ -105,7 +96,6 @@ pub fn generate_with_style(chords: &[ChordSymbol], style: &Style) -> Vec<Phrase>
                     }
                 }
                 AccType::Phrase1 | AccType::Phrase2 => {
-                    // Melodic phrases
                     if let Some(ct) = current_cs.chord_type() {
                         for i in 0..4 {
                             let d = ct.degrees[i % ct.degrees.len()];
@@ -118,13 +108,17 @@ pub fn generate_with_style(chords: &[ChordSymbol], style: &Style) -> Vec<Phrase>
         }
     }
 
-    // Humanize + quantize all tracks
-    let hum = Humanizer::new(HumanizerConfig::default());
-    for track in &mut tracks {
-        hum.humanize(track);
-        quantize_phrase(track, &ts);
+    if humanize {
+        let hum = Humanizer::new(HumanizerConfig::default());
+        for track in &mut tracks {
+            hum.humanize(track);
+            quantize_phrase(track, &ts);
+        }
+    } else {
+        for track in &mut tracks {
+            quantize_phrase(track, &ts);
+        }
     }
-
     tracks
 }
 
