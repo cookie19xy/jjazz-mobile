@@ -118,37 +118,42 @@ fn generate_impl(chords: &[ChordSymbol], style: &Style, humanize: bool) -> Vec<P
 
 fn make_drum_pattern(bar_start: f32) -> Vec<NoteEvent> {
     let mut notes = Vec::new();
-    notes.push(NoteEvent::new(36, 0.3, 110, bar_start));       // Kick 1
-    notes.push(NoteEvent::new(36, 0.3, 100, bar_start + 2.0)); // Kick 3
-    notes.push(NoteEvent::new(38, 0.2, 100, bar_start + 1.0)); // Snare 2
-    notes.push(NoteEvent::new(38, 0.2, 100, bar_start + 3.0)); // Snare 4
-    for i in 0..8 {
-        notes.push(NoteEvent::new(42, 0.1, 70, bar_start + i as f32 * 0.5)); // HH
-    }
+    notes.push(NoteEvent::new(36, 0.3, 120, bar_start));       // Kick 1 loud
+    notes.push(NoteEvent::new(42, 0.1, 65, bar_start + 0.0));  // HH soft
+    notes.push(NoteEvent::new(42, 0.1, 50, bar_start + 0.5));  // HH offbeat
+    notes.push(NoteEvent::new(38, 0.2, 108, bar_start + 1.0)); // Snare 2
+    notes.push(NoteEvent::new(42, 0.1, 60, bar_start + 1.0));  // HH
+    notes.push(NoteEvent::new(42, 0.1, 48, bar_start + 1.5));  // HH off
+    notes.push(NoteEvent::new(36, 0.3, 100, bar_start + 2.0)); // Kick 3 softer
+    notes.push(NoteEvent::new(42, 0.1, 58, bar_start + 2.0));  // HH
+    notes.push(NoteEvent::new(42, 0.1, 48, bar_start + 2.5));  // HH off
+    notes.push(NoteEvent::new(38, 0.2, 105, bar_start + 3.0)); // Snare 4
+    notes.push(NoteEvent::new(42, 0.1, 60, bar_start + 3.0));  // HH
+    notes.push(NoteEvent::new(42, 0.1, 48, bar_start + 3.5));  // HH off
     notes
 }
 
 fn make_bass_pattern(root: u8, _chord: &ChordSymbol, bar_start: f32, _ref_chord: &ChordSymbol) -> Vec<NoteEvent> {
-    let pattern = [(0.0, 1.5), (2.0, 0.5), (2.5, 0.5), (3.0, 0.5)];
-    pattern.iter().map(|&(offset, dur)| {
+    let pattern = [(0.0, 1.5, 115), (2.0, 0.5, 88), (2.5, 0.5, 72), (3.0, 0.5, 82)];
+    pattern.iter().map(|&(offset, dur, vel)| {
         let pitch = if offset == 0.0 { root }
         else if offset < 3.0 { root + 7 }
         else { root + 12 };
-        NoteEvent::new(pitch, dur, 110, bar_start + offset)
+        NoteEvent::new(pitch, dur, vel, bar_start + offset)
     }).collect()
 }
 
 fn make_chord_pattern(root: u8, chord: &ChordSymbol, bar_start: f32, is_chord1: bool, _ref_chord: &ChordSymbol) -> Vec<NoteEvent> {
-    let pattern: Vec<(f32, f32)> = if is_chord1 {
-        vec![(0.0, 0.6), (1.0, 0.4), (2.0, 0.5), (3.0, 0.4)]
+    let pattern: Vec<(f32, f32, u8)> = if is_chord1 {
+        vec![(0.0, 0.6, 105), (1.0, 0.4, 78), (2.0, 0.5, 92), (3.0, 0.4, 76)]
     } else {
-        vec![(0.0, 0.8), (2.0, 0.6), (3.0, 0.5)]
+        vec![(0.0, 0.8, 100), (2.0, 0.6, 82), (3.0, 0.5, 78)]
     };
     if let Some(ct) = chord.chord_type() {
-        return pattern.iter().enumerate().map(|(pi, &(offset, dur))| {
+        return pattern.iter().enumerate().map(|(pi, &(offset, dur, vel))| {
             let deg = ct.degrees[pi % ct.degrees.len()];
             let pitch = (root + 12 + deg.pitch()).min(127);
-            NoteEvent::new(pitch, dur, 95, bar_start + offset)
+            NoteEvent::new(pitch, dur, vel, bar_start + offset)
         }).collect();
     }
     Vec::new()
@@ -156,9 +161,10 @@ fn make_chord_pattern(root: u8, chord: &ChordSymbol, bar_start: f32, is_chord1: 
 
 fn make_pad_pattern(root: u8, chord: &ChordSymbol, bar_start: f32, ts: TimeSignature, _ref_chord: &ChordSymbol) -> Vec<NoteEvent> {
     if let Some(ct) = chord.chord_type() {
-        return ct.degrees.iter().take(3).map(|&d| {
+        let vels = [85, 72, 78];
+        return ct.degrees.iter().take(3).enumerate().map(|(i, &d)| {
             let pitch = (root + 12 + d.pitch()).min(127);
-            NoteEvent::new(pitch, ts.nb_natural_beats() - 0.05, 75, bar_start)
+            NoteEvent::new(pitch, ts.nb_natural_beats() - 0.05, vels[i % 3], bar_start)
         }).collect();
     }
     Vec::new()
@@ -166,10 +172,11 @@ fn make_pad_pattern(root: u8, chord: &ChordSymbol, bar_start: f32, ts: TimeSigna
 
 fn make_melody_pattern(root: u8, chord: &ChordSymbol, bar_start: f32, _ref_chord: &ChordSymbol) -> Vec<NoteEvent> {
     if let Some(ct) = chord.chord_type() {
+        let vels = [110, 82, 95, 80];
         return (0..4).map(|i| {
             let d = ct.degrees[i % ct.degrees.len()];
             let pitch = (root + 12 + d.pitch()).min(127);
-            NoteEvent::new(pitch, 0.5, 100, bar_start + i as f32 * 1.0)
+            NoteEvent::new(pitch, 0.5, vels[i], bar_start + i as f32 * 1.0)
         }).collect();
     }
     Vec::new()
