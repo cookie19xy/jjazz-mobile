@@ -34,7 +34,7 @@
 - **依赖**: serde, serde_json, rand, rustysynth, midly
 - **UI**: Flutter (待开始)
 - **音频**: rustysynth → iOS/Android (零 C 依赖)
-- **参考源**: [JJazzLab](https://github.com/jjazzboss/JJazzLab) (LGPL v2.1, 只读 — `E:\Github\JJazzLab`)
+- **参考源**: [JJazzLab](https://github.com/jjazzboss/JJazzLab) (LGPL v2.1)
 
 ## 项目结构
 
@@ -71,17 +71,20 @@ jjazz-mobile/
 ## 快速开始
 
 ```bash
-# 确保有 SoundFont 文件在 jjazz-engine/ 目录下
-cp "E:\JJazzLab\jjazzlab\modules\soundfont\JJazzLab-SoundFont.sf2" .
+# 1. 下载一个 GM SoundFont (如 TimGM6mb.sf2, FluidR3_GM.sf2) 放到 jjazz-engine/ 目录
+# 2. 构建运行
 
-# 方式 1: 用真实 Yamaha 风格文件 (推荐, 8247 音符)
-cargo run --bin play-style -- "path/to/style.yjz" Dm7 G7 Cmaj7
+# 方式 1: 用 Yamaha 风格文件 (推荐, 8247 真实音符)
+cargo run --bin play-style -- path/to/style.yjz Dm7 G7 Cmaj7
 
-# 方式 2: 用手写 pattern (兼容, 102 音符)
+# 方式 2: 用手写 pattern (内置, 无需外部文件)
 cargo run --bin jjazz-demo -- Dm7 G7 Cmaj7
 
-# 解析任意风格文件
-cargo run --bin parse-style -- "path/to/style.prs"
+# 解析任意风格文件为 JSON
+cargo run --bin parse-style -- path/to/style.prs
+
+# 导出 golden baseline
+cargo run --bin jjazz-export -- Dm7 G7 Cmaj7
 
 # 运行测试
 cargo test
