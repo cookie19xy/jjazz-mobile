@@ -8,14 +8,26 @@ use jjazz_engine::synth::SynthEngine;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    if args.len() < 3 {
-        eprintln!("用法: jjazz-demo <soundfont.sf2> <和弦...>");
-        eprintln!("示例: jjazz-demo TimGM6mb.sf2 Dm7 G7 Cmaj7");
+    if args.len() < 2 {
+        eprintln!("用法: jjazz-demo [soundfont.sf2] <和弦...>");
+        eprintln!("示例: jjazz-demo Dm7 G7 Cmaj7");
+        eprintln!("     jjazz-demo myfont.sf2 Dm7 G7 Cmaj7");
         return;
     }
 
-    let sf2_path = &args[1];
-    let chord_strs = &args[2..];
+    // Auto-detect SoundFont: first arg = .sf2 → use it, otherwise look locally
+    let (sf2_path, chord_strs): (String, &[String]) = if args[1].ends_with(".sf2") || args[1].ends_with(".sf3") {
+        (args[1].clone(), &args[2..])
+    } else {
+        let candidates = ["JJazzLab-SoundFont.sf2", "TimGM6mb.sf2"];
+        match candidates.iter().find(|f| std::path::Path::new(f).exists()) {
+            Some(f) => (f.to_string(), &args[1..]),
+            None => {
+                eprintln!("找不到 SoundFont 文件！请将 .sf2 放在当前目录。");
+                return;
+            }
+        }
+    };
 
     // 1. Parse chords
     println!("解析和弦...");
