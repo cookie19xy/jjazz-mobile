@@ -11,13 +11,11 @@ import java.awt.*;
 import java.text.ParseException;
 import java.util.*;
 
-/**
- * 最简测试 GUI: 输入和弦 → 点生成 → 看到结果。
- */
 public class TestGui {
 
     private JTextArea logArea;
     private JTextField inputField;
+    private JButton goBtn;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new TestGui().build());
@@ -32,65 +30,84 @@ public class TestGui {
         JPanel main = new JPanel(new BorderLayout(8, 8));
         main.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // === TOP: input ===
         JPanel top = new JPanel(new BorderLayout(5, 0));
-        top.add(new JLabel("和弦 (逗号/空格分隔):"), BorderLayout.WEST);
+        top.add(new JLabel("和弦:"), BorderLayout.WEST);
         inputField = new JTextField("Dm7 G7 Cmaj7");
         inputField.setFont(new Font("Monospaced", Font.PLAIN, 16));
-        inputField.addActionListener(e -> run());
+        inputField.addActionListener(e -> doRun());
         top.add(inputField, BorderLayout.CENTER);
 
         JPanel topBtns = new JPanel(new GridLayout(1, 2, 5, 0));
-        JButton goBtn = new JButton("生成");
-        goBtn.addActionListener(e -> run());
+        goBtn = new JButton("生成");
+        goBtn.addActionListener(e -> doRun());
         topBtns.add(goBtn);
         JButton clearBtn = new JButton("清空");
         clearBtn.addActionListener(e -> logArea.setText(""));
         topBtns.add(clearBtn);
         top.add(topBtns, BorderLayout.EAST);
-
         main.add(top, BorderLayout.NORTH);
 
-        // === CENTER: log ===
         logArea = new JTextArea();
         logArea.setEditable(false);
         logArea.setFont(new Font("Monospaced", Font.PLAIN, 13));
-        JScrollPane sp = new JScrollPane(logArea);
-        main.add(sp, BorderLayout.CENTER);
+        main.add(new JScrollPane(logArea), BorderLayout.CENTER);
 
         f.add(main);
         f.setVisible(true);
         inputField.requestFocus();
 
         log("=== JJazz Pure Core ===");
-        log("输入和弦 (如 Dm7 G7 Cmaj7) 然后回车或点 [生成]");
+        log("输入和弦 → 回车 或 点 [生成]");
         log("");
+
+        // Sanity check: does the button work at all?
+        JOptionPane.showMessageDialog(f, "GUI 启动成功。\n输入和弦后点 [生成] 或按回车。", "就绪", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    void doRun() {
+        goBtn.setText("处理中...");
+        goBtn.setEnabled(false);
+        // Run on background thread so GUI doesn't freeze
+        new Thread(() -> {
+            try {
+                run();
+            } catch (Throwable t) {
+                String msg = t.toString();
+                log("!!! 崩溃: " + msg);
+                for (StackTraceElement ste : t.getStackTrace()) {
+                    if (ste.getClassName().contains("purecore")) log("    at " + ste);
+                }
+                SwingUtilities.invokeLater(() ->
+                    JOptionPane.showMessageDialog(null, "错误:\n" + msg, "崩溃", JOptionPane.ERROR_MESSAGE));
+            } finally {
+                SwingUtilities.invokeLater(() -> { goBtn.setText("生成"); goBtn.setEnabled(true); });
+            }
+        }).start();
     }
 
     void run() {
         String raw = inputField.getText().trim();
-        if (raw.isEmpty()) return;
+        log(">>> 开始处理: " + raw);
 
-        // 1. Parse chords
+        // 1. Parse
+        log("[1/4] 解析和弦...");
         java.util.List<ChordSymbol> chords = new ArrayList<>();
         for (String s : raw.split("[,，\\s]+")) {
             if (s.isEmpty()) continue;
             try {
-                chords.add(new ChordSymbol(s));
+                ChordSymbol cs = new ChordSymbol(s);
+                chords.add(cs);
+                log("  ✓ " + s + " → " + cs.getName() + " " + cs.getChordType().toDegreeString());
             } catch (ParseException ex) {
-                log("✗ 无法解析: " + s + " — " + ex.getMessage());
+                log("  ✗ " + s + " — " + ex.getMessage());
                 return;
             }
         }
-        if (chords.isEmpty()) return;
+        if (chords.isEmpty()) { log("  无有效和弦!"); return; }
+        log("  解析完成: " + chords.size() + " 个和弦");
 
-        log("=== 输入: " + raw + " (" + chords.size() + " 个和弦) ===");
-        for (ChordSymbol cs : chords) {
-            log("  " + cs.getName() + "  " + cs.getChordType().toDegreeString()
-                + "  notes=" + cs.getChord(48).toAbsoluteNoteString());
-        }
-
-        // 2. Generate phrase
+        // 2. Generate
+        log("[2/4] 生成乐句...");
         Phrase phrase = new Phrase(0);
         int baseOctave = 36;
         for (int i = 0; i < chords.size(); i++) {
@@ -100,18 +117,20 @@ public class TestGui {
             phrase.add(new NoteEvent(root, 1.5f, 100, start));
             phrase.add(new NoteEvent(root + 7, 0.5f, 85, start + 2f));
         }
-        log("\n--- 生成乐句 (" + phrase.size() + " 音符) ---");
+        log("  生成 " + phrase.size() + " 个音符");
         dump(phrase);
 
         // 3. Humanize
+        log("[3/4] 人性化...");
         Humanizer h = new Humanizer(phrase, TimeSignature.FOUR_FOUR, 120);
         h.registerNotes(new ArrayList<>(phrase));
         h.setConfig(Humanizer.DEFAULT_CONFIG);
         h.humanize();
-        log("\n--- 人性化后 ---");
+        log("  人性化完成");
         dump(phrase);
 
         // 4. Quantize
+        log("[4/4] 量化...");
         Map<NoteEvent, NoteEvent> reps = new HashMap<>();
         for (NoteEvent ne : phrase) {
             Position p = Position.fromAbsoluteBeat(ne.getPositionInBeats(), TimeSignature.FOUR_FOUR);
@@ -122,22 +141,25 @@ public class TestGui {
             }
         }
         phrase.replaceAll(reps);
-        log("\n--- 量化后 (拍点对齐) ---");
+        log("  量化完成, " + reps.size() + " 音符调整");
         dump(phrase);
+
         log("\n========== 完成 ==========\n");
     }
 
     void dump(Phrase p) {
         int i = 0;
         for (NoteEvent ne : p) {
-            log(String.format("  #%02d %-6s pos=%-6.3f dur=%-5.2f vel=%d",
+            log(String.format("    #%02d %-6s pos=%-6.3f dur=%-5.2f vel=%d",
                 i++, ne.toPianoOctaveString(), ne.getPositionInBeats(),
                 ne.getDurationInBeats(), ne.getVelocity()));
         }
     }
 
     void log(String s) {
-        logArea.append(s + "\n");
-        logArea.setCaretPosition(logArea.getDocument().getLength());
+        SwingUtilities.invokeLater(() -> {
+            logArea.append(s + "\n");
+            logArea.setCaretPosition(logArea.getDocument().getLength());
+        });
     }
 }
