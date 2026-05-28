@@ -9,3 +9,4 @@ pub mod retrigger;
 pub mod source_phrase;
 pub mod patterns;
 pub mod style_parser;
+pub mod style_player;
