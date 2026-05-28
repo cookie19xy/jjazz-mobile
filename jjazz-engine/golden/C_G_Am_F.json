@@ -91,256 +91,256 @@
         "note_name": "Gb2"
       },
       {
-        "pitch": 36,
+        "pitch": 43,
         "position": 4.0,
         "duration": 0.3,
         "velocity": 110,
-        "note_name": "C2"
+        "note_name": "G2"
       },
       {
-        "pitch": 42,
+        "pitch": 49,
         "position": 4.0,
         "duration": 0.1,
         "velocity": 70,
-        "note_name": "Gb2"
+        "note_name": "Db3"
       },
       {
-        "pitch": 42,
+        "pitch": 49,
         "position": 4.0,
         "duration": 0.1,
         "velocity": 70,
-        "note_name": "Gb2"
+        "note_name": "Db3"
       },
       {
-        "pitch": 38,
+        "pitch": 45,
         "position": 5.0,
         "duration": 0.2,
         "velocity": 100,
-        "note_name": "D2"
+        "note_name": "A2"
       },
       {
-        "pitch": 42,
+        "pitch": 49,
         "position": 5.0,
         "duration": 0.1,
         "velocity": 70,
-        "note_name": "Gb2"
+        "note_name": "Db3"
       },
       {
-        "pitch": 42,
+        "pitch": 49,
         "position": 5.0,
         "duration": 0.1,
         "velocity": 70,
-        "note_name": "Gb2"
+        "note_name": "Db3"
       },
       {
-        "pitch": 36,
+        "pitch": 43,
         "position": 6.0,
         "duration": 0.3,
         "velocity": 100,
-        "note_name": "C2"
+        "note_name": "G2"
       },
       {
-        "pitch": 42,
+        "pitch": 49,
         "position": 6.0,
         "duration": 0.1,
         "velocity": 70,
-        "note_name": "Gb2"
+        "note_name": "Db3"
       },
       {
-        "pitch": 42,
+        "pitch": 49,
         "position": 6.0,
         "duration": 0.1,
         "velocity": 70,
-        "note_name": "Gb2"
+        "note_name": "Db3"
       },
       {
-        "pitch": 38,
+        "pitch": 45,
         "position": 7.0,
         "duration": 0.2,
         "velocity": 100,
-        "note_name": "D2"
+        "note_name": "A2"
       },
       {
-        "pitch": 42,
+        "pitch": 49,
         "position": 7.0,
         "duration": 0.1,
         "velocity": 70,
-        "note_name": "Gb2"
+        "note_name": "Db3"
       },
       {
-        "pitch": 42,
+        "pitch": 49,
         "position": 7.0,
         "duration": 0.1,
         "velocity": 70,
-        "note_name": "Gb2"
+        "note_name": "Db3"
       },
       {
-        "pitch": 36,
+        "pitch": 48,
         "position": 8.0,
         "duration": 0.3,
         "velocity": 110,
-        "note_name": "C2"
+        "note_name": "C3"
       },
       {
-        "pitch": 42,
+        "pitch": 55,
         "position": 8.0,
         "duration": 0.1,
         "velocity": 70,
-        "note_name": "Gb2"
+        "note_name": "G3"
       },
       {
-        "pitch": 42,
+        "pitch": 55,
         "position": 8.0,
         "duration": 0.1,
         "velocity": 70,
-        "note_name": "Gb2"
+        "note_name": "G3"
       },
       {
-        "pitch": 38,
+        "pitch": 50,
         "position": 9.0,
         "duration": 0.2,
         "velocity": 100,
-        "note_name": "D2"
+        "note_name": "D3"
       },
       {
-        "pitch": 42,
+        "pitch": 55,
         "position": 9.0,
         "duration": 0.1,
         "velocity": 70,
-        "note_name": "Gb2"
+        "note_name": "G3"
       },
       {
-        "pitch": 42,
+        "pitch": 55,
         "position": 9.0,
         "duration": 0.1,
         "velocity": 70,
-        "note_name": "Gb2"
+        "note_name": "G3"
       },
       {
-        "pitch": 36,
+        "pitch": 48,
         "position": 10.0,
         "duration": 0.3,
         "velocity": 100,
-        "note_name": "C2"
+        "note_name": "C3"
       },
       {
-        "pitch": 42,
+        "pitch": 55,
         "position": 10.0,
         "duration": 0.1,
         "velocity": 70,
-        "note_name": "Gb2"
+        "note_name": "G3"
       },
       {
-        "pitch": 42,
+        "pitch": 55,
         "position": 10.0,
         "duration": 0.1,
         "velocity": 70,
-        "note_name": "Gb2"
+        "note_name": "G3"
       },
       {
-        "pitch": 38,
+        "pitch": 50,
         "position": 11.0,
         "duration": 0.2,
         "velocity": 100,
-        "note_name": "D2"
+        "note_name": "D3"
       },
       {
-        "pitch": 42,
+        "pitch": 55,
         "position": 11.0,
         "duration": 0.1,
         "velocity": 70,
-        "note_name": "Gb2"
+        "note_name": "G3"
       },
       {
-        "pitch": 42,
+        "pitch": 55,
         "position": 11.0,
         "duration": 0.1,
         "velocity": 70,
-        "note_name": "Gb2"
+        "note_name": "G3"
       },
       {
-        "pitch": 36,
+        "pitch": 41,
         "position": 12.0,
         "duration": 0.3,
         "velocity": 110,
-        "note_name": "C2"
+        "note_name": "F2"
       },
       {
-        "pitch": 42,
+        "pitch": 47,
         "position": 12.0,
         "duration": 0.1,
         "velocity": 70,
-        "note_name": "Gb2"
+        "note_name": "B2"
       },
       {
-        "pitch": 42,
+        "pitch": 47,
         "position": 12.0,
         "duration": 0.1,
         "velocity": 70,
-        "note_name": "Gb2"
+        "note_name": "B2"
       },
       {
-        "pitch": 38,
+        "pitch": 43,
         "position": 13.0,
         "duration": 0.2,
         "velocity": 100,
-        "note_name": "D2"
+        "note_name": "G2"
       },
       {
-        "pitch": 42,
+        "pitch": 47,
         "position": 13.0,
         "duration": 0.1,
         "velocity": 70,
-        "note_name": "Gb2"
+        "note_name": "B2"
       },
       {
-        "pitch": 42,
+        "pitch": 47,
         "position": 13.0,
         "duration": 0.1,
         "velocity": 70,
-        "note_name": "Gb2"
+        "note_name": "B2"
       },
       {
-        "pitch": 36,
+        "pitch": 41,
         "position": 14.0,
         "duration": 0.3,
         "velocity": 100,
-        "note_name": "C2"
+        "note_name": "F2"
       },
       {
-        "pitch": 42,
+        "pitch": 47,
         "position": 14.0,
         "duration": 0.1,
         "velocity": 70,
-        "note_name": "Gb2"
+        "note_name": "B2"
       },
       {
-        "pitch": 42,
+        "pitch": 47,
         "position": 14.0,
         "duration": 0.1,
         "velocity": 70,
-        "note_name": "Gb2"
+        "note_name": "B2"
       },
       {
-        "pitch": 38,
+        "pitch": 43,
         "position": 15.0,
         "duration": 0.2,
         "velocity": 100,
-        "note_name": "D2"
+        "note_name": "G2"
       },
       {
-        "pitch": 42,
+        "pitch": 47,
         "position": 15.0,
         "duration": 0.1,
         "velocity": 70,
-        "note_name": "Gb2"
+        "note_name": "B2"
       },
       {
-        "pitch": 42,
+        "pitch": 47,
         "position": 15.0,
         "duration": 0.1,
         "velocity": 70,
-        "note_name": "Gb2"
+        "note_name": "B2"
       }
     ]
   },
@@ -369,11 +369,11 @@
         "note_name": "G1"
       },
       {
-        "pitch": 30,
+        "pitch": 36,
         "position": 3.0,
         "duration": 0.5,
         "velocity": 110,
-        "note_name": "Gb1"
+        "note_name": "C2"
       },
       {
         "pitch": 31,
@@ -397,11 +397,11 @@
         "note_name": "D2"
       },
       {
-        "pitch": 32,
+        "pitch": 43,
         "position": 7.0,
         "duration": 0.5,
         "velocity": 110,
-        "note_name": "Ab1"
+        "note_name": "G2"
       },
       {
         "pitch": 33,
@@ -425,11 +425,11 @@
         "note_name": "E2"
       },
       {
-        "pitch": 30,
+        "pitch": 45,
         "position": 11.0,
         "duration": 0.5,
         "velocity": 110,
-        "note_name": "Gb1"
+        "note_name": "A2"
       },
       {
         "pitch": 29,
@@ -453,11 +453,11 @@
         "note_name": "C2"
       },
       {
-        "pitch": 30,
+        "pitch": 41,
         "position": 15.0,
         "duration": 0.5,
         "velocity": 110,
-        "note_name": "Gb1"
+        "note_name": "F2"
       }
     ]
   },
@@ -500,18 +500,18 @@
         "note_name": "G2"
       },
       {
-        "pitch": 43,
+        "pitch": 47,
         "position": 5.0,
         "duration": 0.4,
         "velocity": 95,
-        "note_name": "G2"
+        "note_name": "B2"
       },
       {
-        "pitch": 55,
+        "pitch": 50,
         "position": 6.0,
         "duration": 0.5,
         "velocity": 95,
-        "note_name": "G3"
+        "note_name": "D3"
       },
       {
         "pitch": 43,
@@ -521,32 +521,32 @@
         "note_name": "G2"
       },
       {
-        "pitch": 45,
+        "pitch": 48,
         "position": 8.0,
         "duration": 0.6,
         "velocity": 95,
-        "note_name": "A2"
+        "note_name": "C3"
       },
       {
-        "pitch": 45,
+        "pitch": 51,
         "position": 9.0,
         "duration": 0.4,
         "velocity": 95,
-        "note_name": "A2"
+        "note_name": "Eb3"
       },
       {
-        "pitch": 57,
+        "pitch": 55,
         "position": 10.0,
         "duration": 0.5,
         "velocity": 95,
-        "note_name": "A3"
+        "note_name": "G3"
       },
       {
-        "pitch": 45,
+        "pitch": 48,
         "position": 11.0,
         "duration": 0.4,
         "velocity": 95,
-        "note_name": "A2"
+        "note_name": "C3"
       },
       {
         "pitch": 41,
@@ -556,18 +556,18 @@
         "note_name": "F2"
       },
       {
-        "pitch": 41,
+        "pitch": 45,
         "position": 13.0,
         "duration": 0.4,
         "velocity": 95,
-        "note_name": "F2"
+        "note_name": "A2"
       },
       {
-        "pitch": 53,
+        "pitch": 48,
         "position": 14.0,
         "duration": 0.5,
         "velocity": 95,
-        "note_name": "F3"
+        "note_name": "C3"
       },
       {
         "pitch": 41,
@@ -603,67 +603,67 @@
         "note_name": "G2"
       },
       {
-        "pitch": 38,
+        "pitch": 43,
         "position": 4.0,
         "duration": 0.8,
         "velocity": 95,
-        "note_name": "D2"
-      },
-      {
-        "pitch": 42,
-        "position": 6.0,
-        "duration": 0.6,
-        "velocity": 95,
-        "note_name": "Gb2"
-      },
-      {
-        "pitch": 45,
-        "position": 7.0,
-        "duration": 0.5,
-        "velocity": 95,
-        "note_name": "A2"
+        "note_name": "G2"
       },
       {
         "pitch": 47,
-        "position": 8.0,
-        "duration": 0.8,
+        "position": 6.0,
+        "duration": 0.6,
         "velocity": 95,
         "note_name": "B2"
       },
       {
         "pitch": 50,
-        "position": 10.0,
-        "duration": 0.6,
+        "position": 7.0,
+        "duration": 0.5,
         "velocity": 95,
         "note_name": "D3"
       },
       {
-        "pitch": 54,
+        "pitch": 48,
+        "position": 8.0,
+        "duration": 0.8,
+        "velocity": 95,
+        "note_name": "C3"
+      },
+      {
+        "pitch": 51,
+        "position": 10.0,
+        "duration": 0.6,
+        "velocity": 95,
+        "note_name": "Eb3"
+      },
+      {
+        "pitch": 55,
         "position": 11.0,
         "duration": 0.5,
         "velocity": 95,
-        "note_name": "Gb3"
-      },
-      {
-        "pitch": 36,
-        "position": 12.0,
-        "duration": 0.8,
-        "velocity": 95,
-        "note_name": "C2"
+        "note_name": "G3"
       },
       {
         "pitch": 41,
-        "position": 14.0,
-        "duration": 0.6,
+        "position": 12.0,
+        "duration": 0.8,
         "velocity": 95,
         "note_name": "F2"
       },
       {
         "pitch": 45,
+        "position": 14.0,
+        "duration": 0.6,
+        "velocity": 95,
+        "note_name": "A2"
+      },
+      {
+        "pitch": 48,
         "position": 15.0,
         "duration": 0.5,
         "velocity": 95,
-        "note_name": "A2"
+        "note_name": "C3"
       }
     ]
   },
@@ -692,53 +692,46 @@
         "note_name": "G2"
       },
       {
-        "pitch": 50,
+        "pitch": 43,
         "position": 4.0,
         "duration": 3.95,
         "velocity": 75,
-        "note_name": "D3"
-      },
-      {
-        "pitch": 54,
-        "position": 4.0,
-        "duration": 3.95,
-        "velocity": 75,
-        "note_name": "Gb3"
-      },
-      {
-        "pitch": 57,
-        "position": 4.0,
-        "duration": 3.95,
-        "velocity": 75,
-        "note_name": "A3"
+        "note_name": "G2"
       },
       {
         "pitch": 47,
-        "position": 8.0,
+        "position": 4.0,
         "duration": 3.95,
         "velocity": 75,
         "note_name": "B2"
       },
       {
         "pitch": 50,
-        "position": 8.0,
+        "position": 4.0,
         "duration": 3.95,
         "velocity": 75,
         "note_name": "D3"
       },
       {
-        "pitch": 54,
+        "pitch": 48,
         "position": 8.0,
         "duration": 3.95,
         "velocity": 75,
-        "note_name": "Gb3"
+        "note_name": "C3"
       },
       {
-        "pitch": 37,
-        "position": 12.0,
+        "pitch": 51,
+        "position": 8.0,
         "duration": 3.95,
         "velocity": 75,
-        "note_name": "Db2"
+        "note_name": "Eb3"
+      },
+      {
+        "pitch": 55,
+        "position": 8.0,
+        "duration": 3.95,
+        "velocity": 75,
+        "note_name": "G3"
       },
       {
         "pitch": 41,
@@ -748,11 +741,18 @@
         "note_name": "F2"
       },
       {
-        "pitch": 44,
+        "pitch": 45,
         "position": 12.0,
         "duration": 3.95,
         "velocity": 75,
-        "note_name": "Ab2"
+        "note_name": "A2"
+      },
+      {
+        "pitch": 48,
+        "position": 12.0,
+        "duration": 3.95,
+        "velocity": 75,
+        "note_name": "C3"
       }
     ]
   },
@@ -816,32 +816,32 @@
         "note_name": "G2"
       },
       {
-        "pitch": 45,
-        "position": 8.0,
-        "duration": 0.5,
-        "velocity": 100,
-        "note_name": "A2"
-      },
-      {
         "pitch": 48,
-        "position": 9.0,
+        "position": 8.0,
         "duration": 0.5,
         "velocity": 100,
         "note_name": "C3"
       },
       {
-        "pitch": 52,
+        "pitch": 51,
+        "position": 9.0,
+        "duration": 0.5,
+        "velocity": 100,
+        "note_name": "Eb3"
+      },
+      {
+        "pitch": 55,
         "position": 10.0,
         "duration": 0.5,
         "velocity": 100,
-        "note_name": "E3"
+        "note_name": "G3"
       },
       {
-        "pitch": 45,
+        "pitch": 48,
         "position": 11.0,
         "duration": 0.5,
         "velocity": 100,
-        "note_name": "A2"
+        "note_name": "C3"
       },
       {
         "pitch": 41,
@@ -933,32 +933,32 @@
         "note_name": "G2"
       },
       {
-        "pitch": 45,
-        "position": 8.0,
-        "duration": 0.5,
-        "velocity": 100,
-        "note_name": "A2"
-      },
-      {
         "pitch": 48,
-        "position": 9.0,
+        "position": 8.0,
         "duration": 0.5,
         "velocity": 100,
         "note_name": "C3"
       },
       {
-        "pitch": 52,
+        "pitch": 51,
+        "position": 9.0,
+        "duration": 0.5,
+        "velocity": 100,
+        "note_name": "Eb3"
+      },
+      {
+        "pitch": 55,
         "position": 10.0,
         "duration": 0.5,
         "velocity": 100,
-        "note_name": "E3"
+        "note_name": "G3"
       },
       {
-        "pitch": 45,
+        "pitch": 48,
         "position": 11.0,
         "duration": 0.5,
         "velocity": 100,
-        "note_name": "A2"
+        "note_name": "C3"
       },
       {
         "pitch": 41,
