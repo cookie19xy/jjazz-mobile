@@ -57,10 +57,13 @@ impl SynthEngine {
         let total_samples = ((total_beats + 1.0) * 60.0 / bpm * sr) as usize;
         self.reset();
 
-        // Set instruments: ch0=bass(33), ch1=piano(1), ch2=strings(49)
-        self.program_change(0, 33);
-        self.program_change(1, 1);
-        self.program_change(2, 49);
+        // Set instruments: all channels use piano (0) for guaranteed sound in any GM SoundFont
+        self.program_change(0, 0);
+        self.program_change(1, 0);
+        self.program_change(2, 0);
+
+        // Boost master volume
+        self.synthesizer.set_master_volume(2.0);
 
         let mut output = vec![0.0f32; total_samples * 2];
         let mut event_idx = 0;

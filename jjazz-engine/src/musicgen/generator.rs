@@ -21,15 +21,15 @@ pub fn generate_backing(chords: &[ChordSymbol]) -> Vec<Phrase> {
         let bar_start = bar as f32 * ts.nb_natural_beats();
 
         // Bass: root on beat 1, fifth on beat 3
-        bass.add(NoteEvent::new(root, 1.5, 100, bar_start));
-        bass.add(NoteEvent::new(root + 7, 0.5, 85, bar_start + 2.0));
+        bass.add(NoteEvent::new(root, 1.5, 127, bar_start));
+        bass.add(NoteEvent::new(root + 7, 0.5, 110, bar_start + 2.0));
 
         // Comping: chord tones spread across the bar
         if let Some(ct) = cs.chord_type() {
             for (i, d) in ct.degrees.iter().enumerate() {
                 if i >= 4 { break; } // max 4 notes
                 let pitch = root + d.pitch();
-                comp.add(NoteEvent::new(pitch, 0.8, 70, bar_start + i as f32 * 1.0));
+                comp.add(NoteEvent::new(pitch, 0.8, 110, bar_start + i as f32 * 1.0));
             }
         }
 
@@ -38,7 +38,7 @@ pub fn generate_backing(chords: &[ChordSymbol]) -> Vec<Phrase> {
             for i in 0..4 {
                 let d = ct.degrees[i % ct.degrees.len()];
                 let pitch = (root + 24 + d.pitch()).min(127);
-                melody.add(NoteEvent::new(pitch, 0.4, 90, bar_start + i as f32 * 0.5));
+                melody.add(NoteEvent::new(pitch, 0.4, 120, bar_start + i as f32 * 0.5));
             }
         }
     }

@@ -40,7 +40,10 @@ fn main() {
 
     println!("渲染音频...");
     let audio = synth.render_tracks(&tracks, 120.0);
+    let max_val = audio.iter().map(|s| s.abs()).fold(0.0f32, f32::max);
+    let non_zero = audio.iter().filter(|s| s.abs() > 0.0001).count();
     println!("  渲染完成: {} samples ({:.1}s)", audio.len() / 2, audio.len() as f32 / 88200.0);
+    println!("  最大振幅: {:.6}, 非零: {}/{}", max_val, non_zero, audio.len());
 
     // 4. Write WAV file
     let wav_path = "output.wav";
@@ -73,9 +76,10 @@ fn write_wav(path: &str, samples: &[f32], sample_rate: u32) {
     f.write_all(b"data").unwrap();
     f.write_all(&data_len.to_le_bytes()).unwrap();
 
-    // Convert f32 to i16
+    // Convert f32 to i16 with gain boost
+    let gain = 8.0; // boost volume
     for s in samples {
-        let clamped = (s * 32767.0).clamp(-32768.0, 32767.0) as i16;
+        let clamped = (s * gain * 32767.0).clamp(-32768.0, 32767.0) as i16;
         f.write_all(&clamped.to_le_bytes()).unwrap();
     }
 }
