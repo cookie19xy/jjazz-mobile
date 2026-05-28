@@ -1,0 +1,5 @@
+pub mod chord_sequence;
+pub mod generator;
+
+pub use chord_sequence::ChordSequence;
+pub use generator::generate_backing;
