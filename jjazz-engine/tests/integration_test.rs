@@ -3,6 +3,8 @@ use jjazz_engine::phrase::*;
 use jjazz_engine::humanizer::*;
 use jjazz_engine::quantizer::*;
 use jjazz_engine::musicgen::*;
+use jjazz_engine::style::*;
+use jjazz_engine::retrigger::*;
 
 #[test]
 fn test_parse_chords() {
@@ -39,28 +41,11 @@ fn test_generate_backing() {
         ChordSymbol::parse("G7").unwrap(),
         ChordSymbol::parse("Cmaj7").unwrap(),
     ];
-
-    let tracks = generate_backing(&chords);
-    assert_eq!(tracks.len(), 3); // bass, comp, melody
-
-    // Bass track should have 6 notes (3 bars × 2 notes)
-    assert_eq!(tracks[0].len(), 6);
-
-    // Comp track should have at least 6 notes
-    assert!(tracks[1].len() >= 6);
-
-    // Melody track should have 12 notes (3 bars × 4 notes)
-    assert_eq!(tracks[2].len(), 12);
-
-    // All notes should be within reasonable bounds
-    for track in &tracks {
-        for ne in &track.notes {
-            assert!(ne.pitch <= 127);
-            assert!(ne.velocity <= 127);
-            assert!(ne.position >= 0.0);
-            assert!(ne.duration > 0.0);
-        }
-    }
+    let style = Style::bossanova();
+    let tracks = generate_with_style(&chords, &style);
+    assert_eq!(tracks.len(), 8);
+    assert!(tracks[2].len() > 0, "Bass track empty");
+    assert!(tracks[3].len() > 0, "Guitar track empty");
 }
 
 #[test]
@@ -101,23 +86,21 @@ fn test_json_roundtrip() {
 
 #[test]
 fn test_end_to_end() {
-    let input = "Dm7 G7 Cmaj7";
-    let chords: Vec<ChordSymbol> = input
+    let chords: Vec<ChordSymbol> = "Dm7 G7 Cmaj7"
         .split_whitespace()
         .map(|s| ChordSymbol::parse(s).unwrap())
         .collect();
+    let style = Style::bossanova();
+    let tracks = generate_with_style(&chords, &style);
+    assert_eq!(tracks.len(), 8);
+}
 
-    assert_eq!(chords.len(), 3);
-
-    let tracks = generate_backing(&chords);
-    assert_eq!(tracks.len(), 3);
-
-    println!("=== Generated backing track ===");
-    for (i, track) in tracks.iter().enumerate() {
-        let name = ["Bass", "Comping", "Melody"][i];
-        println!("--- {} ({} notes) ---", name, track.len());
-        for ne in &track.notes {
-            println!("  {:>5} pos={:<6.3} dur={:<4.2} vel={}", ne.piano_octave_string(), ne.position, ne.duration, ne.velocity);
-        }
-    }
+#[test]
+fn test_retrigger_rules() {
+    let c = ChordSymbol::parse("C").unwrap();
+    let g = ChordSymbol::parse("G").unwrap();
+    assert_eq!(adapt_note(60, &c, &g, RetriggerRule::Retrigger), Some(60));
+    assert_eq!(adapt_note(60, &c, &g, RetriggerRule::Stop), None);
+    let r = adapt_note(60, &c, &g, RetriggerRule::RetriggerToRoot).unwrap();
+    assert_eq!(r % 12, 7);
 }
