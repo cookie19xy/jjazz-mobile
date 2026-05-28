@@ -89,22 +89,33 @@ public class TestGui {
     }
 
     void addChord() {
-        String s = inputField.getText().trim();
-        if (s.isEmpty()) return;
-        try {
-            ChordSymbol cs = new ChordSymbol(s);
-            chords.add(cs);
-            log("OK: " + s + " -> " + cs.getName()
-                + "  root=" + cs.getRootNote().toRelativeNoteString()
-                + "  type=" + cs.getChordType().toDegreeString());
-            inputField.setText("");
-            inputField.requestFocus();
-            updateStatus();
-        } catch (ParseException ex) {
-            log("FAIL: " + s + " — " + ex.getMessage());
-            JOptionPane.showMessageDialog(null,
-                "无法解析: " + s + "\n" + ex.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
+        String raw = inputField.getText().trim();
+        if (raw.isEmpty()) return;
+
+        // Support: Dm7,G7,Cmaj7  or  Dm7 G7 Cmaj7  or single chord
+        String[] parts = raw.split("[,，\\s]+");
+        int ok = 0, fail = 0;
+        for (String s : parts) {
+            if (s.isEmpty()) continue;
+            try {
+                ChordSymbol cs = new ChordSymbol(s);
+                chords.add(cs);
+                log("OK: " + s + " -> " + cs.getName()
+                    + "  root=" + cs.getRootNote().toRelativeNoteString()
+                    + "  type=" + cs.getChordType().toDegreeString());
+                ok++;
+            } catch (ParseException ex) {
+                log("FAIL: " + s + " — " + ex.getMessage());
+                fail++;
+            }
         }
+        if (fail > 0 && ok == 0) {
+            JOptionPane.showMessageDialog(null,
+                "无法解析: " + raw, "错误", JOptionPane.ERROR_MESSAGE);
+        }
+        inputField.setText("");
+        inputField.requestFocus();
+        updateStatus();
     }
 
     void generate() {
