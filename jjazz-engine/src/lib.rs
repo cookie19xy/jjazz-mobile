@@ -7,3 +7,4 @@ pub mod synth;
 pub mod style;
 pub mod retrigger;
 pub mod source_phrase;
+pub mod patterns;
