@@ -65,7 +65,8 @@ fn main() {
         audio.len() as f32 / 88200.0, peak, nz, audio.len());
 
     // 4. WAV
-    let wav_path = "output.wav";
+    let _ = std::fs::create_dir("output");
+    let wav_path = "output/output.wav";
     write_wav(wav_path, &audio, 44100);
     let size_mb = std::fs::metadata(wav_path).map(|m| m.len() as f64 / 1_000_000.0).unwrap_or(0.0);
     println!("\n✅ {} ({:.1} MB)", wav_path, size_mb);
