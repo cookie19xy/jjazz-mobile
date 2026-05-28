@@ -1,0 +1,1 @@
+# JJazz Mobile\n\n移动版JJazzLab - 基于Rust引擎 + Flutter UI + FluidSynth音频\n\n## 项目结构\n- jjazz-pure-core/ : Java核心抽离验证 (参考实现)\n- jjazz-engine/ : Rust音乐生成引擎\n- jjazz-flutter/ : Flutter跨平台UI\n- docs/ : 文档与设计\n\n## 分支策略\n- main : 稳定可构建\n- phase-* : 开发分支\n\n## 原项目\nhttps://github.com/jjazzboss/JJazzLab (LGPL v2.1)
