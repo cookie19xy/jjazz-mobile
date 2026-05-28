@@ -23,41 +23,38 @@ pub fn generate_from_parsed_part(
     chords: &[ChordSymbol],
 ) -> Result<Vec<Phrase>, String> {
     let ts = TimeSignature::FOUR_FOUR;
-    let beats_per_bar = ts.nb_natural_beats(); // 4.0
+    let pattern_beats = part.size_beats; // e.g. 32 beats = 8 bars, the full pattern length
 
-    // Map channels to our 8-track layout:
-    // ch9,10→drums, ch0→bass, ch1→guitar, ch2→piano, ch3→pad, ch4→brass, ch5→piano2
-    let channel_map = [
-        (9u8, 1usize),  // Rhythm drums → track 1
-        (10u8, 1usize), // also drums
-        (0u8, 2usize),  // Bass
-        (1u8, 3usize),  // Guitar (Chord1)
-        (2u8, 4usize),  // Piano (Chord2)
-        (3u8, 5usize),  // Pad
-        (4u8, 6usize),  // Phrase1 (Brass)
-        (5u8, 7usize),  // Phrase2 (Piano2)
+    let channel_map: &[(u8, usize, bool)] = &[
+        (9,  1, true),   // Rhythm drums
+        (10, 1, true),   // also drums
+        (0,  2, false),  // Bass
+        (1,  3, false),  // Guitar (Chord1)
+        (2,  4, false),  // Piano (Chord2)
+        (3,  5, false),  // Pad
+        (4,  6, false),  // Phrase1 (Brass)
+        (5,  7, false),  // Phrase2 (Piano2)
     ];
 
     let mut tracks: Vec<Phrase> = (0..8).map(|i| {
-        if i == 0 { Phrase::new(9) } // SubRhythm on ch9
-        else if i == 1 { Phrase::new(9) } // Rhythm on ch9
-        else { Phrase::new(i as u8 - 2) } // Bass=ch0, Guitar=ch1, etc.
+        if i <= 1 { Phrase::new(9) }
+        else { Phrase::new(i as u8 - 2) }
     }).collect();
 
     // Style files use Cmaj7 as source chord
     let source_chord = ChordSymbol::parse("Cmaj7")
         .unwrap_or_else(|_| ChordSymbol::parse("C").unwrap());
 
-    for (bar, current_cs) in chords.iter().enumerate() {
-        let bar_start = bar as f32 * beats_per_bar;
+    // Each chord plays the full pattern once (pattern_beats duration per chord)
+    for (chord_idx, current_cs) in chords.iter().enumerate() {
+        let section_start = chord_idx as f32 * pattern_beats;
 
-        for &(ch, track_idx) in &channel_map {
+        for &(ch, track_idx, is_drums) in channel_map {
             if let Some(notes) = part.channels.get(&ch) {
-                let is_drums = ch == 9 || ch == 10;
                 let track = &mut tracks[track_idx];
 
                 for note in notes {
-                    let pos = note.start_beat + bar_start;
+                    let pos = note.start_beat + section_start;
                     let dur = note.duration_beats;
 
                     let final_pitch = if is_drums {
