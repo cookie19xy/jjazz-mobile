@@ -60,7 +60,7 @@ impl SynthEngine {
         // Standard GM instruments
         self.program_change(0, 33); // Acoustic Bass
         self.program_change(1, 1);  // Acoustic Grand Piano
-        self.program_change(2, 49); // String Ensemble 1
+        self.program_change(2, 25); // Nylon Guitar
 
         // Default master volume (no artificial boost)
         self.synthesizer.set_master_volume(1.0);

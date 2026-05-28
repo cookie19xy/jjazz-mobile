@@ -76,10 +76,11 @@ fn write_wav(path: &str, samples: &[f32], sample_rate: u32) {
     f.write_all(b"data").unwrap();
     f.write_all(&data_len.to_le_bytes()).unwrap();
 
-    // Convert f32 to i16 with gain boost
-    let gain = 1.5; // modest gain, synth should produce full volume
+    // Peak normalization
+    let peak = samples.iter().map(|s| s.abs()).fold(0.0f32, f32::max);
+    let norm = if peak > 0.001 { 0.95 / peak } else { 1.0 };
     for s in samples {
-        let clamped = (s * gain * 32767.0).clamp(-32768.0, 32767.0) as i16;
+        let clamped = (s * norm * 32767.0).clamp(-32768.0, 32767.0) as i16;
         f.write_all(&clamped.to_le_bytes()).unwrap();
     }
 }

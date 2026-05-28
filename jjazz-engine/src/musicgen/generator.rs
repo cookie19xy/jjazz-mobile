@@ -33,12 +33,12 @@ pub fn generate_backing(chords: &[ChordSymbol]) -> Vec<Phrase> {
             }
         }
 
-        // Melody: simple arpeggio
+        // Melody: simple arpeggio, lower octave, longer notes
         if let Some(ct) = cs.chord_type() {
             for i in 0..4 {
                 let d = ct.degrees[i % ct.degrees.len()];
-                let pitch = (root + 24 + d.pitch()).min(127);
-                melody.add(NoteEvent::new(pitch, 0.4, 120, bar_start + i as f32 * 0.5));
+                let pitch = (root + 12 + d.pitch()).min(127); // one octave up
+                melody.add(NoteEvent::new(pitch, 1.0, 110, bar_start + i as f32 * 1.0));
             }
         }
     }
