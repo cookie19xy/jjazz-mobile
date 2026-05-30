@@ -14,3 +14,4 @@ pub mod casm;
 pub mod accent;
 pub mod song_builder;
 pub mod phrase_transform;
+pub mod midi_tools;
