@@ -8,27 +8,36 @@ use jjazz_engine::synth::SynthEngine;
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() < 3 {
-        eprintln!("用法: play-style <style> [-b bars] <和弦...>");
+        eprintln!("用法: play-style <style> [-b bars] [-p part] <和弦...>");
         eprintln!("示例: play-style style.yjz Dm7 G7 Cmaj7");
-        eprintln!("     play-style style.yjz -b 2 Dm7 G7 Cmaj7  (每和弦2小节)");
+        eprintln!("     play-style style.yjz -b 2 -p 1 Dm7 G7  (每和弦2小节, P2变奏)");
         return;
     }
 
     let style_path = &args[1];
-    let mut bars_per_chord: u32 = 0; // 0 = full pattern
-    let mut chord_start = 2;
+    let mut bars_per_chord: u32 = 0;
+    let mut part_index: usize = 0;
+    let mut i = 2;
 
-    if args.len() > 3 && args[2] == "-b" {
-        bars_per_chord = args[3].parse().unwrap_or(0);
-        chord_start = 4;
+    while i < args.len() {
+        if args[i] == "-b" && i + 1 < args.len() {
+            bars_per_chord = args[i + 1].parse().unwrap_or(0);
+            i += 2;
+        } else if args[i] == "-p" && i + 1 < args.len() {
+            part_index = args[i + 1].parse().unwrap_or(0);
+            i += 2;
+        } else {
+            break;
+        }
     }
 
-    let chords: Vec<ChordSymbol> = args[chord_start..].iter()
+    let chords: Vec<ChordSymbol> = args[i..].iter()
         .map(|s| ChordSymbol::parse(s).expect(&format!("无法解析: {}", s)))
         .collect();
 
-    println!("加载风格: {} ({}小节/和弦)", style_path, if bars_per_chord > 0 { bars_per_chord.to_string() } else { "full".into() });
-    let tracks = generate_from_style_file(style_path, &chords, bars_per_chord)
+    println!("加载风格: {} (P{}, {}小节/和弦)", style_path, part_index + 1,
+        if bars_per_chord > 0 { bars_per_chord.to_string() } else { "full".into() });
+    let tracks = generate_from_style_file(style_path, &chords, bars_per_chord, part_index)
         .expect("Failed to load style");
 
     let names = ["SubDrums","Drums","Bass","Guitar","Piano","Pad","Brass","Piano2"];

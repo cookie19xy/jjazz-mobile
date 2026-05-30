@@ -8,14 +8,16 @@ use crate::harmony::{TimeSignature, Position};
 
 /// Generate backing tracks from a Yamaha style file.
 /// `bars_per_chord`: how many bars each chord lasts. 0 = full pattern length.
+/// `part_index`: which StylePart to use (0-based). 0=basic, 1=medium, 2=complex.
 pub fn generate_from_style_file(
     style_path: &str,
     chords: &[ChordSymbol],
     bars_per_chord: u32,
+    part_index: usize,
 ) -> Result<Vec<Phrase>, String> {
     let parsed = parse_style_file(style_path)?;
-    let part = parsed.parts.first()
-        .ok_or("Style file has no parts".to_string())?;
+    let part = parsed.parts.get(part_index)
+        .ok_or_else(|| format!("Part index {} not found ({} parts available)", part_index, parsed.parts.len()))?;
     generate_from_parsed_part(part, chords, bars_per_chord)
 }
 
