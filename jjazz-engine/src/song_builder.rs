@@ -1,9 +1,6 @@
 use crate::phrase::{Phrase, NoteEvent};
 use crate::harmony::{TimeSignature, ChordSymbol};
-use crate::style::{Style, AccType, StylePart, ChannelSettings, RetriggerRule};
-use crate::retrigger::adapt_note;
-use crate::accent::{AccentProcessor, AccentType};
-use crate::source_phrase::{SourcePhrase, fit_melody_phrase_to_chord, fit_bass_phrase_to_chord, fit_chord_phrase_to_chord};
+use crate::source_phrase::{SourcePhrase, fit_melody_phrase_to_chord, fit_bass_phrase_to_chord};
 use std::collections::HashMap;
 
 // ─── Intensity / Velocity adjustment ────────────────────
@@ -128,9 +125,9 @@ pub fn build_song(
     arrangement: &SongArrangement,
     all_parts: &HashMap<String, crate::style_parser::ParsedStylePart>,
     intensity: u8,
-    bpm: f32,
+    _bpm: f32,
 ) -> Result<Vec<Phrase>, String> {
-    let ts = TimeSignature::FOUR_FOUR;
+    let _ts = TimeSignature::FOUR_FOUR;
     let mut all_tracks: Vec<Phrase> = (0..8).map(|i| {
         if i <= 1 { Phrase::new(9) } else { Phrase::new((i - 2) as u8) }
     }).collect();

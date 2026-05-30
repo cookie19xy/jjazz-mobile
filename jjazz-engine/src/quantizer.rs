@@ -40,7 +40,7 @@ pub fn quantize(q: Quantization, pos: &Position, ts: &TimeSignature, strength: f
             let new_frac = quantize_impl(frac, &[0.0], strength);
             let new_beat = beat_int + new_frac;
             if ts.check_beat(new_beat) { Position::new(pos.bar, new_beat) }
-            else if pos.bar + 1 <= max_bar { Position::at_bar(pos.bar + 1) }
+            else if pos.bar < max_bar { Position::at_bar(pos.bar + 1) }
             else { Position::new(pos.bar, beat_int) }
         }
         Quantization::HalfBeat => {

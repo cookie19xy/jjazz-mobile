@@ -74,7 +74,7 @@ impl ChordSymbol {
     /// Get the chord notes at a given root pitch.
     pub fn get_chord(&self, root_pitch: u8) -> Option<Chord> {
         let ct = self.chord_type()?;
-        let mut c = ct.chord();
+        let c = ct.chord();
         let mut result = Chord::new();
         for n in c.notes() {
             result.add(Note::new(root_pitch + n.pitch));

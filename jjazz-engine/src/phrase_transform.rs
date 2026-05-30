@@ -1,6 +1,5 @@
 use crate::phrase::{Phrase, NoteEvent};
 use crate::harmony::{ChordSymbol, TimeSignature};
-use std::collections::HashMap;
 
 // ═══════════════════════════════════════════════════════════
 //  SimpleChordSequence: beat-level chord cells

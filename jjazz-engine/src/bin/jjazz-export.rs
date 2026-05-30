@@ -3,7 +3,6 @@ use std::fs;
 use jjazz_engine::harmony::ChordSymbol;
 use jjazz_engine::musicgen::generate_clean;
 use jjazz_engine::style::Style;
-use jjazz_engine::phrase::NoteEvent;
 use serde::Serialize;
 
 #[derive(Serialize)]
@@ -29,16 +28,16 @@ fn main() {
     }
 
     let chords: Vec<ChordSymbol> = args[1..].iter()
-        .map(|s| ChordSymbol::parse(s).expect(&format!("无法解析: {}", s)))
+        .map(|s| ChordSymbol::parse(s).unwrap_or_else(|_| panic!("无法解析: {}", s)))
         .collect();
 
     let style = Style::bossanova();
     let tracks = generate_clean(&chords, &style);
 
-    let names = ["SubDrums","Drums","Bass","Guitar","Piano","Pad","Brass","Piano2"];
+    let _names = ["SubDrums","Drums","Bass","Guitar","Piano","Pad","Brass","Piano2"];
     let mut output = Vec::new();
 
-    for (i, track) in tracks.iter().enumerate() {
+    for (_i, track) in tracks.iter().enumerate() {
         let mut notes = Vec::new();
         for ne in &track.notes {
             notes.push(NoteJson {

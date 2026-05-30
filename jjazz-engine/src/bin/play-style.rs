@@ -30,7 +30,7 @@ fn main() {
         } else { break; }
     }
     let chords: Vec<ChordSymbol> = args[i..].iter()
-        .map(|s| ChordSymbol::parse(s).expect(&format!("无法解析: {}", s)))
+        .map(|s| ChordSymbol::parse(s).unwrap_or_else(|_| panic!("无法解析: {}", s)))
         .collect();
 
     println!("加载: {} [-s {}]", style_path, if section.is_empty() { "Main" } else { &section });
@@ -40,7 +40,7 @@ fn main() {
 
     let mut total = 0;
     for (i, t) in tracks.iter().enumerate() {
-        if t.len() > 0 {
+        if !t.is_empty() {
             let name = if i == 0 { "SubDrums" } else if i == 1 { "Drums" }
                 else { "" }; // just show channel later
             println!("  {} ch{}: {} notes", name, t.channel, t.len());

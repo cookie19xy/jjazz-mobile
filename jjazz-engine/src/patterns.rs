@@ -1,5 +1,5 @@
 use crate::harmony::ChordSymbol;
-use crate::phrase::{Phrase, NoteEvent};
+use crate::phrase::NoteEvent;
 
 /// A single MIDI note template: (pitch_offset_from_root, position_in_beats, duration, velocity)
 type NoteTemplate = (i32, f32, f32, u8);
@@ -151,7 +151,7 @@ pub fn melody_call_response(root: u8, chord: &ChordSymbol, bar_start: f32, bar_i
         let degs = &ct.degrees;
         let root = root as i32 + 12;
         // Alternate between two patterns for musical interest
-        let pattern = if bar_idx % 2 == 0 {
+        let pattern = if bar_idx.is_multiple_of(2) {
             vec![(0.0, 0.6, 0, 108), (1.0, 0.5, 2, 82),
                  (2.0, 0.4, 1, 90), (3.0, 0.8, 0, 100)]
         } else {

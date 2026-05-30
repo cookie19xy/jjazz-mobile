@@ -10,9 +10,10 @@ pub struct Note {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, serde::Serialize, serde::Deserialize)]
-pub enum Accidental { Flat, Sharp }
+#[derive(Default)]
+pub enum Accidental { #[default]
+Flat, Sharp }
 
-impl Default for Accidental { fn default() -> Self { Accidental::Flat } }
 
 pub const PITCH_MIN: u8 = 0;
 pub const PITCH_STD: u8 = 60;

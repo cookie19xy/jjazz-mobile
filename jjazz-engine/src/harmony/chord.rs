@@ -12,6 +12,12 @@ struct NoteKey(u8);
 
 impl From<&Note> for NoteKey { fn from(n: &Note) -> Self { NoteKey(n.pitch) } }
 
+impl Default for Chord {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Chord {
     pub fn new() -> Self { Self { notes: BTreeSet::new() } }
 

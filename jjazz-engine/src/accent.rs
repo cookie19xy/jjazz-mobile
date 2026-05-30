@@ -48,18 +48,16 @@ impl AccentProcessor {
                 let abs_accent = bar_start + accent_beat;
                 if (ne.position - abs_accent).abs() < 0.01 {
                     match accent_type {
-                        AccentType::Hold => {
+                        AccentType::Hold
                             // In Hold, keep only hi-hat/ride (short decay drums)
-                            if ne.pitch != 42 && ne.pitch != 46 && ne.pitch != 51 {
+                            if ne.pitch != 42 && ne.pitch != 46 && ne.pitch != 51 => {
                                 to_remove.push(i);
                             }
-                        }
-                        AccentType::Shot | AccentType::HoldShot => {
+                        AccentType::Shot | AccentType::HoldShot
                             // In Shot, remove all except the first beat accent
-                            if rel_pos > 0.1 {
+                            if rel_pos > 0.1 => {
                                 to_remove.push(i);
                             }
-                        }
                         _ => {}
                     }
                 }
@@ -116,7 +114,7 @@ impl AccentProcessor {
         let notes_pos: Vec<(f32, u8)> = phrase.notes.iter().map(|n| (n.position, n.pitch)).collect();
         let mut to_remove = Vec::new();
 
-        for (i, &(pos, _)) in notes_pos.iter().enumerate() {
+        for (_i, &(pos, _)) in notes_pos.iter().enumerate() {
             let bar_start = (pos / bar_duration).floor() * bar_duration;
             let rel_pos = pos - bar_start;
             for &(accent_beat, accent_type) in accents {

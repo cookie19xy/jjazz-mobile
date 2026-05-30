@@ -29,7 +29,7 @@ pub struct ChordType {
 }
 
 static REGISTRY: LazyLock<HashMap<String, ChordType>> = LazyLock::new(|| {
-    let mut m = HashMap::new();
+    let m = HashMap::new();
     // Built-in types are registered via ChordTypes static init
     m
 });

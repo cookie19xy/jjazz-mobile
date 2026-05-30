@@ -6,6 +6,12 @@ pub struct ChordSequence {
     pub chords: Vec<ChordSymbol>,
 }
 
+impl Default for ChordSequence {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ChordSequence {
     pub fn new() -> Self { Self { chords: Vec::new() } }
     pub fn push(&mut self, cs: ChordSymbol) { self.chords.push(cs); }

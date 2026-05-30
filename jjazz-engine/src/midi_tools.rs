@@ -1,4 +1,4 @@
-use crate::harmony::{ChordSymbol, Degree, TimeSignature};
+use crate::harmony::{ChordSymbol, Degree};
 use crate::phrase::{Phrase, NoteEvent};
 
 /// Walking bass generator: constructs bass lines from chord progressions.
@@ -23,7 +23,7 @@ impl WalkingBassGenerator {
         &self,
         chords: &[ChordSymbol],
         beats_per_chord: f32,
-        tempo: u16,
+        _tempo: u16,
     ) -> Phrase {
         let mut phrase = Phrase::new(0);
         if chords.is_empty() { return phrase; }

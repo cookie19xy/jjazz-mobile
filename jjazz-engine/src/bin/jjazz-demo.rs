@@ -32,7 +32,7 @@ fn main() {
     // 1. Parse chords
     println!("解析和弦...");
     let chords: Vec<ChordSymbol> = chord_strs.iter()
-        .map(|s| ChordSymbol::parse(s).expect(&format!("无法解析: {}", s)))
+        .map(|s| ChordSymbol::parse(s).unwrap_or_else(|_| panic!("无法解析: {}", s)))
         .collect();
     for cs in &chords {
         println!("  {} -> {}  root={}", cs.name, cs.chord_type_name, cs.root_note);
@@ -46,7 +46,7 @@ fn main() {
     let names = ["SubDrums","Drums","Bass","Guitar","Piano","Pad","Brass","Piano2"];
     let mut total_notes = 0;
     for (i, t) in tracks.iter().enumerate() {
-        if t.len() > 0 {
+        if !t.is_empty() {
             println!("  {}: {} notes", names[i], t.len());
             total_notes += t.len();
         }

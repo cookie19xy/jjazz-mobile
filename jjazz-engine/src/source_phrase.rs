@@ -1,4 +1,4 @@
-use crate::harmony::{ChordSymbol, Degree, Note};
+use crate::harmony::{ChordSymbol, Degree};
 use crate::phrase::{Phrase, NoteEvent};
 
 /// SourcePhrase: a Phrase bound to its original source chord.
@@ -30,7 +30,7 @@ impl SourcePhrase {
     /// For each unique degree in the source phrase notes, find the corresponding
     /// destination degree in the destination chord type.
     pub fn get_dest_degrees(&self, dest_chord: &ChordSymbol) -> Vec<(Degree, Degree)> {
-        let src_ct = match self.source_chord.chord_type() {
+        let _src_ct = match self.source_chord.chord_type() {
             Some(ct) => ct,
             None => return Vec::new(),
         };
@@ -40,7 +40,7 @@ impl SourcePhrase {
         };
 
         let src_root = self.source_chord.root_note.relative_pitch();
-        let dest_root = dest_chord.root_note.relative_pitch();
+        let _dest_root = dest_chord.root_note.relative_pitch();
 
         // Collect unique relative pitches from source notes
         let mut src_rel_pitches: Vec<u8> = Vec::new();
@@ -69,7 +69,7 @@ impl SourcePhrase {
 pub fn fit_melody_phrase_to_chord(
     src: &SourcePhrase,
     dest_chord: &ChordSymbol,
-    chord_mode: bool,
+    _chord_mode: bool,
 ) -> Phrase {
     let mut dest = Phrase::new(src.phrase.channel);
     if src.is_empty() { return dest; }
@@ -87,7 +87,7 @@ pub fn fit_melody_phrase_to_chord(
         return dest;
     }
 
-    let src_ct = match src.source_chord.chord_type() { Some(ct) => ct, None => return dest };
+    let _src_ct = match src.source_chord.chord_type() { Some(ct) => ct, None => return dest };
     let dest_ct = match dest_chord.chord_type() { Some(ct) => ct, None => return dest };
 
     let map_degrees = src.get_dest_degrees(dest_chord);
@@ -141,15 +141,18 @@ pub fn fit_bass_phrase_to_chord(
 
 fn closest_pitch(reference: i32, target_rp: u8) -> u8 {
     let octave = reference / 12;
-    let candidates = [
-        (octave - 1) * 12 + target_rp as i32,
-        octave * 12 + target_rp as i32,
-        (octave + 1) * 12 + target_rp as i32,
-    ];
-    candidates.iter()
-        .map(|&c| c.clamp(0, 127) as u8)
-        .min_by_key(|&p| (p as i32 - reference).abs())
-        .unwrap_or(reference as u8)
+    let mut best = reference.clamp(0, 127) as u8;
+    let mut best_dist = i32::MAX;
+    for o in [octave - 1, octave, octave + 1] {
+        if o < 0 { continue; }
+        let candidate = (o * 12 + target_rp as i32).clamp(0, 127);
+        let dist = (candidate as i32 - reference).abs();
+        if dist < best_dist {
+            best = candidate as u8;
+            best_dist = dist;
+        }
+    }
+    best
 }
 
 #[cfg(test)]

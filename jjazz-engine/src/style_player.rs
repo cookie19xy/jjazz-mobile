@@ -1,7 +1,7 @@
 use crate::harmony::ChordSymbol;
 use crate::phrase::{Phrase, NoteEvent};
 use crate::style_parser::{parse_style_file, ParsedStylePart};
-use crate::source_phrase::{SourcePhrase, fit_melody_phrase_to_chord, fit_chord_phrase_to_chord, fit_bass_phrase_to_chord};
+use crate::source_phrase::{SourcePhrase, fit_melody_phrase_to_chord, fit_bass_phrase_to_chord};
 use crate::humanizer::{Humanizer, HumanizerConfig};
 use crate::quantizer::{quantize, Quantization};
 use crate::harmony::{TimeSignature, Position};

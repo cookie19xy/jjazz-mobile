@@ -71,7 +71,7 @@ pub fn parse_casm(raw: &[u8]) -> Result<CasmData, String> {
     if !found { return Ok(empty_casm()); }
 
     let _casm_size = read_u32(raw, &mut pos) as usize;
-    let casm_end = pos + (_casm_size as usize).min(raw.len() - pos);
+    let casm_end = pos + _casm_size.min(raw.len() - pos);
 
     let mut sections: HashMap<String, HashMap<u8, CasmChannelSetting>> = HashMap::new();
     let mut sff_version: u8 = 1;

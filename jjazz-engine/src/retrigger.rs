@@ -1,4 +1,4 @@
-use crate::harmony::{ChordSymbol, ChordType, Note};
+use crate::harmony::ChordSymbol;
 use crate::harmony::degree::Degree;
 use crate::style::RetriggerRule;
 
@@ -23,12 +23,12 @@ pub fn adapt_note(
             let src_rel = (source_pitch as i32 - src_root_rp as i32).rem_euclid(12) as u8;
 
             // Find matching degree in target chord
-            if let (Some(src_ct), Some(tgt_ct)) = (source_chord.chord_type(), target_chord.chord_type()) {
+            if let (Some(_src_ct), Some(tgt_ct)) = (source_chord.chord_type(), target_chord.chord_type()) {
                 let src_degree = Degree::most_probable(src_rel);
                 let tgt_degree = tgt_ct.fit_degree(src_degree).unwrap_or(src_degree);
                 let tgt_root_rp = target_chord.root_note.relative_pitch();
                 let new_rp = (tgt_root_rp + tgt_degree.pitch()) % 128;
-                Some(closest_pitch(source_pitch, new_rp as u8))
+                Some(closest_pitch(source_pitch, new_rp))
             } else {
                 // Fallback: just transpose by root difference
                 let diff = target_chord.root_note.relative_pitch() as i32
