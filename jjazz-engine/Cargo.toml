@@ -9,5 +9,6 @@ serde_json = "1"
 rand = "0.8"
 rustysynth = "1"
 midly = "0.5"
+cpal = "0.15"
 
 [dev-dependencies]

@@ -16,3 +16,4 @@ pub mod song_builder;
 pub mod phrase_transform;
 pub mod midi_tools;
 pub mod streaming;
+pub mod live;
