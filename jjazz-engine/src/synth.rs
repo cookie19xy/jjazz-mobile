@@ -57,17 +57,14 @@ impl SynthEngine {
         let total_samples = ((total_beats + 1.0) * 60.0 / bpm * sr) as usize;
         self.reset();
 
-        // Standard GM instruments
-        // Set instruments for all 8 AccTypes
-        // ch0: bass(33), ch1: guitar(26), ch2: piano(1), ch3: strings(50), 
-        // ch4: brass(62), ch5: piano2(2), ch9: drums(0)
+        // Set GM instruments: ch0-5 = standard, ch6-15 = piano fallback
         self.program_change(0, 33);
         self.program_change(1, 26);
         self.program_change(2, 1);
         self.program_change(3, 50);
         self.program_change(4, 62);
         self.program_change(5, 2);
-        // ch9 is drums, no program change needed
+        for ch in 6..16 { self.program_change(ch, 1); }
 
         // Default master volume (no artificial boost)
         self.synthesizer.set_master_volume(1.0);

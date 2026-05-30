@@ -8,43 +8,42 @@ use jjazz_engine::synth::SynthEngine;
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() < 3 {
-        eprintln!("用法: play-style <style> [-b bars] [-p part] <和弦...>");
-        eprintln!("示例: play-style style.yjz Dm7 G7 Cmaj7");
-        eprintln!("     play-style style.yjz -b 2 -p 1 Dm7 G7  (每和弦2小节, P2变奏)");
+        eprintln!("用法: play-style <style> [-b bars] [-s section] <和弦...>");
+        eprintln!("示例: play-style styles/Swing&Jazz/BossaNova.S466.prs Dm7 G7 Cmaj7");
+        eprintln!("     play-style styles/Ballad/PopBallad.S540.prs -b 2 -s Main C G Am F");
+        eprintln!("     play-style styles/Ballad/PopBallad.S540.prs -b 4 -s Fill C G");
+        eprintln!("Sections: Main, Fill, Intro, Ending");
         return;
     }
 
     let style_path = &args[1];
     let mut bars_per_chord: u32 = 0;
-    let mut part_index: usize = 0;
+    let mut section = String::new();
     let mut i = 2;
-
     while i < args.len() {
         if args[i] == "-b" && i + 1 < args.len() {
             bars_per_chord = args[i + 1].parse().unwrap_or(0);
             i += 2;
-        } else if args[i] == "-p" && i + 1 < args.len() {
-            part_index = args[i + 1].parse().unwrap_or(0);
+        } else if args[i] == "-s" && i + 1 < args.len() {
+            section = args[i + 1].clone();
             i += 2;
-        } else {
-            break;
-        }
+        } else { break; }
     }
-
     let chords: Vec<ChordSymbol> = args[i..].iter()
         .map(|s| ChordSymbol::parse(s).expect(&format!("无法解析: {}", s)))
         .collect();
 
-    println!("加载风格: {} (P{}, {}小节/和弦)", style_path, part_index + 1,
-        if bars_per_chord > 0 { bars_per_chord.to_string() } else { "full".into() });
-    let tracks = generate_from_style_file(style_path, &chords, bars_per_chord, part_index)
+    println!("加载: {} [-s {}]", style_path, if section.is_empty() { "Main" } else { &section });
+    let (tracks, part_name) = generate_from_style_file(style_path, &chords, bars_per_chord, &section)
         .expect("Failed to load style");
+    println!("  使用 section: {}", part_name);
 
-    let names = ["SubDrums","Drums","Bass","Guitar","Piano","Pad","Brass","Piano2"];
     let mut total = 0;
     for (i, t) in tracks.iter().enumerate() {
         if t.len() > 0 {
-            println!("  {}: {} notes", names[i], t.len());
+            let name = if i == 0 { "SubDrums" } else if i == 1 { "Drums" }
+                else { "" }; // just show channel later
+            println!("  {} ch{}: {} notes", name, t.channel, t.len());
             total += t.len();
         }
     }
