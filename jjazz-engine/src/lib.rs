@@ -11,3 +11,4 @@ pub mod patterns;
 pub mod style_parser;
 pub mod style_player;
 pub mod casm;
+pub mod accent;
