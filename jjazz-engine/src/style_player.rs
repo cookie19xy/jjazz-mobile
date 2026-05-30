@@ -6,61 +6,64 @@ use crate::humanizer::{Humanizer, HumanizerConfig};
 use crate::quantizer::{quantize, Quantization};
 use crate::harmony::{TimeSignature, Position};
 
-/// Generate backing tracks directly from a Yamaha style file (.prs/.sty/.yjz).
+/// Generate backing tracks from a Yamaha style file.
+/// `bars_per_chord`: how many bars each chord lasts. 0 = full pattern length.
 pub fn generate_from_style_file(
     style_path: &str,
     chords: &[ChordSymbol],
+    bars_per_chord: u32,
 ) -> Result<Vec<Phrase>, String> {
     let parsed = parse_style_file(style_path)?;
     let part = parsed.parts.first()
         .ok_or("Style file has no parts".to_string())?;
-    generate_from_parsed_part(part, chords)
+    generate_from_parsed_part(part, chords, bars_per_chord)
 }
 
-/// Convert a parsed style part's channel-based notes to AccType-based tracks.
 pub fn generate_from_parsed_part(
     part: &ParsedStylePart,
     chords: &[ChordSymbol],
+    bars_per_chord: u32,
 ) -> Result<Vec<Phrase>, String> {
     let ts = TimeSignature::FOUR_FOUR;
-    let pattern_beats = part.size_beats; // e.g. 32 beats = 8 bars, the full pattern length
+    let pattern_beats = part.size_beats; // e.g. 32 beats
+    let beats_per_chord = if bars_per_chord > 0 {
+        bars_per_chord as f32 * ts.nb_natural_beats()
+    } else {
+        pattern_beats
+    };
 
     let channel_map: &[(u8, usize, bool)] = &[
-        (9,  1, true),   // Rhythm drums
-        (10, 1, true),   // also drums
-        (0,  2, false),  // Bass
-        (1,  3, false),  // Guitar (Chord1)
-        (2,  4, false),  // Piano (Chord2)
-        (3,  5, false),  // Pad
-        (4,  6, false),  // Phrase1 (Brass)
-        (5,  7, false),  // Phrase2 (Piano2)
+        (9,  1, true), (10, 1, true),
+        (0,  2, false), (1, 3, false), (2, 4, false),
+        (3,  5, false), (4, 6, false), (5, 7, false),
     ];
 
     let mut tracks: Vec<Phrase> = (0..8).map(|i| {
-        if i <= 1 { Phrase::new(9) }
-        else { Phrase::new(i as u8 - 2) }
+        if i <= 1 { Phrase::new(9) } else { Phrase::new(i as u8 - 2) }
     }).collect();
 
-    // Style files use Cmaj7 as source chord
     let source_chord = ChordSymbol::parse("Cmaj7")
         .unwrap_or_else(|_| ChordSymbol::parse("C").unwrap());
 
-    // Each chord plays the full pattern once (pattern_beats duration per chord)
     for (chord_idx, current_cs) in chords.iter().enumerate() {
-        let section_start = chord_idx as f32 * pattern_beats;
+        let section_start = chord_idx as f32 * beats_per_chord;
 
         for &(ch, track_idx, is_drums) in channel_map {
             if let Some(notes) = part.channels.get(&ch) {
                 let track = &mut tracks[track_idx];
 
                 for note in notes {
-                    let pos = note.start_beat + section_start;
-                    let dur = note.duration_beats;
+                    // Only include notes that fall within the chord's duration
+                    let rel_beat = note.start_beat % pattern_beats;
+                    if rel_beat >= beats_per_chord { continue; }
+
+                    let pos = rel_beat + section_start;
+                    let dur = note.duration_beats.min(beats_per_chord - rel_beat);
+                    if dur <= 0.0 { continue; }
 
                     let final_pitch = if is_drums {
-                        note.pitch // drums play as-is
+                        note.pitch
                     } else if current_cs.name != source_chord.name {
-                        // Build a mini SourcePhrase for chord adaptation
                         let mut sp = SourcePhrase::new(ch, source_chord.clone());
                         sp.add(NoteEvent::new(note.pitch, dur, note.velocity, pos));
                         let adapted = match track_idx {
@@ -68,8 +71,7 @@ pub fn generate_from_parsed_part(
                             3 | 4 | 5 => fit_chord_phrase_to_chord(&sp, current_cs),
                             _ => fit_melody_phrase_to_chord(&sp, current_cs, false),
                         };
-                        if adapted.is_empty() { note.pitch }
-                        else { adapted.notes[0].pitch }
+                        if adapted.is_empty() { note.pitch } else { adapted.notes[0].pitch }
                     } else {
                         note.pitch
                     };
@@ -80,7 +82,6 @@ pub fn generate_from_parsed_part(
         }
     }
 
-    // Humanize + quantize
     let hum = Humanizer::new(HumanizerConfig::default());
     for track in &mut tracks {
         hum.humanize(track);
@@ -92,6 +93,5 @@ pub fn generate_from_parsed_part(
         track.notes = new_notes;
         track.sort();
     }
-
     Ok(tracks)
 }
